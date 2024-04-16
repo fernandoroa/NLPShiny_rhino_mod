@@ -5,4 +5,5 @@ if (file.exists("renv")) {
   message("No 'renv' directory found; renv won't be activated.")
 }
 
+# Allow absolute module imports (relative to the app root).
 options(box.path = getwd())

@@ -30,7 +30,7 @@ basic_colombia <- function() {
   find_string <- paste(
     "{\"service_type\":{\"$in\" : [\"Healthcare\",\"Cash Transfer\"] },",
     "\"state\":\"Cundinamarca\",",
-    "\"created_at_tz_posix\":{\"$gt\":{\"$date\":\"2016-01-01T00:00:00Z\"}, \"$lt\":{\"$date\":\"2022-03-26T23:59:59Z\"}},",
+    "\"created_at_tz\":{\"$gt\":{\"$date\":\"2016-01-01T00:00:00Z\"}, \"$lt\":{\"$date\":\"2022-03-26T23:59:59Z\"}},",
     "\"satisfied\":false}"
   )
 
@@ -89,13 +89,13 @@ connectdb <- function(collection_name, database_name) {
     mongo(
       collection = collection_name,
       url = sprintf(
-        "mongodb+srv://%s:%s@%s/%s%s",
+        "mongodb://%s:%s@%s/%s",
         Sys.getenv("MONGO_USERNAME"),
         Sys.getenv("MONGO_PASSWORD"),
         Sys.getenv("MONGO_HOST"),
-        database_name,
-        "?sockettimeoutms=1200000"
-      )
+        "admin"
+      ),
+      db = database_name
     ),
     error = function(e) {
       print(paste("42 no internet"))
@@ -120,16 +120,18 @@ read_data <- function(connection, find_string, mylimit, mysort) {
 
 #' @export
 save_data <- function(data, collection_name, database_name) {
-  db <- tryCatch(mongo(
-    collection = collection_name,
-    url = sprintf(
-      "mongodb+srv://%s:%s@%s/%s",
-      Sys.getenv("MONGO_USERNAME"),
-      Sys.getenv("MONGO_PASSWORD"),
-      Sys.getenv("MONGO_HOST"),
-      database_name
-    )
-  ), error = function(e) {
+  db <- tryCatch(
+    mongo(
+      collection = collection_name,
+      url = sprintf(
+        "mongodb://%s:%s@%s/%s",
+        Sys.getenv("MONGO_USERNAME"),
+        Sys.getenv("MONGO_PASSWORD"),
+        Sys.getenv("MONGO_HOST"),
+        "admin"
+      ),
+      db = database_name
+    ), error = function(e) {
     print(paste("25 no internet"))
     "no internet"
   })

@@ -66,8 +66,8 @@ ui <- function(id) {
         div(
           style = style_top,
           selectInput(ns("region_input"), "Region", c("Colombia" = 1, "Africa" = 2),
-                      selected = 2
-                      )
+            selected = 2
+          )
         ),
         div(
           conditionalPanel(
@@ -299,7 +299,8 @@ server <- function(id) {
     })
 
     observeEvent(input$submit,
-      ignoreInit = T, {
+      ignoreInit = TRUE,
+      {
         disable("cash_select_UI_id1", asis = T)
         disable("health_select_UI_id1", asis = T)
         disable("cash_select_UI_id2", asis = T)
@@ -307,7 +308,7 @@ server <- function(id) {
         disable("app-ns_wordcloud-trigram_subset_button", asis = T)
 
         rv$allow_sub <- F
-        rv$submit <- rv$submit+1
+        rv$submit <- rv$submit + 1
 
         if (input$region_input == 1) {
           collection_name <- "colombia_big"
@@ -324,6 +325,7 @@ server <- function(id) {
             '{ "$in" : [ true, false ] }',
             tolower(as.character(input$satisfiedInput))
           )
+          browser()
 
           service_str <- paste0(
             "\"",
@@ -337,7 +339,7 @@ server <- function(id) {
             '"service_type":{"$in" : [', service_str, "] }",
             ', "state":"', input$center_input, '"',
             paste0(
-              ', "created_at_tz_posix":{"$gt":{"$date":"',
+              ', "created_at_tz":{"$gt":{"$date":"',
               sub(
                 "([0-9]{4}-[0-9]{2}-[0-9]{2}).*", "\\1",
                 input$dateInput_from
@@ -360,7 +362,7 @@ server <- function(id) {
               "{",
               '"state":"', input$center_input, '"',
               paste0(
-                ', "created_at_tz_posix":{"$gt":{"$date":"',
+                ', "created_at_tz":{"$gt":{"$date":"',
                 sub(
                   "([0-9]{4}-[0-9]{2}-[0-9]{2}).*", "\\1",
                   input$dateInput_from
@@ -388,7 +390,6 @@ server <- function(id) {
           rv$lat <- col_states_coord[which(col_states_coord$state %in% input$center_input), ]$lat
 
           rv$lng <- col_states_coord[which(col_states_coord$state %in% input$center_input), ]$lng
-
         } else {
           collection_name <- "africa_big"
           database_name <- "kujakuja"
@@ -415,7 +416,7 @@ server <- function(id) {
             ', "country_name":"', input$africa_country_input, '"',
             ', "location_name":"', input$center_input_2, '"',
             paste0(
-              ', "created_at_tz_posix":{"$gt":{"$date":"',
+              ', "created_at_tz":{"$gt":{"$date":"',
               sub(
                 "([0-9]{4}-[0-9]{2}-[0-9]{2}).*", "\\1",
                 input$dateInput_from
@@ -441,7 +442,7 @@ server <- function(id) {
               '"location_name":"', input$center_input_2, '"',
               ",",
               paste0(
-                '"created_at_tz_posix":{"$gt":{"$date":"',
+                '"created_at_tz":{"$gt":{"$date":"',
                 sub(
                   "([0-9]{4}-[0-9]{2}-[0-9]{2}).*", "\\1",
                   input$dateInput_from

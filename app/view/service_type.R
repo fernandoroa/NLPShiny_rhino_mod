@@ -24,7 +24,7 @@ box::use(
 )
 
 box::use(
-  app/objects/objects_NLP[...]
+  app / objects / objects_NLP[...]
 )
 
 #' @export
@@ -44,7 +44,7 @@ server <- function(id, service,
                    vars_filter) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-    rv <- reactiveValues(subset_action=0)
+    rv <- reactiveValues(subset_action = 0)
     rv$alist <- list()
 
     caps_id <- gsub("(^[[:alpha:]])", "\\U\\1", service, perl = TRUE)
@@ -91,7 +91,8 @@ server <- function(id, service,
 
     observeEvent(
       vars_filter$submit(),
-      ignoreInit = T, {
+      ignoreInit = TRUE,
+      {
         rv$alist$ds_copy <- vars_unify$dataset_whole()
 
         update_dropdown_input(
@@ -121,8 +122,7 @@ server <- function(id, service,
 
       rv$alist$ds_copy <- vars_unify$dataset_whole()
 
-      rv$subset_action <- rv$subset_action+1
-
+      rv$subset_action <- rv$subset_action + 1
     })
 
     return(

@@ -141,16 +141,17 @@ server <- function(id) {
     howto_map$server("minimap")
 
     observe({
-      onclick("button", {
+      onclick("button",
+        {
           toggle("sidebar_id", asis = T)
         },
         asis = TRUE
       )
 
       onclick("app-ns_wordcloud-trigram_subset_button",
-              update_tabset(session, "my_tabset", "table_tab"),
-              asis = T)
-
+        update_tabset(session, "my_tabset", "table_tab"),
+        asis = TRUE
+      )
     })
   })
 }

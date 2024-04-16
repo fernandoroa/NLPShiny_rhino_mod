@@ -21,7 +21,7 @@ box::use(
   ]
 )
 
-script_string <- "python3 app/py/wc.py app/outfiles/selection.csv app/outfiles/word_freq.csv app/outfiles/word_cloud.jpg"
+script_string <- ".venv/bin/python3 app/py/wc.py app/outfiles/selection.csv app/outfiles/word_freq.csv app/outfiles/word_cloud.jpg"
 language_vec <- c("spanish", "english")
 
 #
@@ -30,31 +30,34 @@ language_vec <- c("spanish", "english")
 
 ui <- function(id) {
   ns <- NS(id)
-  split_layout(cell_widths= "350px",
-               style = "background:#FFFFFF;",
-               tagList(
-                 div(
-                   actionButton(ns("wc_button"), "Generate", icon("cloud"),
-                                style="color: #fff; background-color: #337ab7; border-color: #2e6da4; width:265px;"
-                   )
-                 ),
-                 br(),
-                 div(class="drop-container",
-                     uiOutput(ns("wordcloud_select_ui"))
-                 ),
-                 br(),
-                 div(
-                   actionButton(ns("trigram_subset_button"), "Filter by trigram"
-                                , icon("table"),
-                                style="color: #fff; background-color: #337ab7; border-color: #2e6da4; width:265px;"
-                   )
-                 )
-               ),
-               div(style="max-width:400px;",
-                   segment(
-                     imageOutput(ns("my_image"), height="300px")
-                   )
-               )
+  split_layout(
+    cell_widths = "350px",
+    style = "background:#FFFFFF;",
+    tagList(
+      div(
+        actionButton(ns("wc_button"), "Generate", icon("cloud"),
+          style = "color: #fff; background-color: #337ab7; border-color: #2e6da4; width:265px;"
+        )
+      ),
+      br(),
+      div(
+        class = "drop-container",
+        uiOutput(ns("wordcloud_select_ui"))
+      ),
+      br(),
+      div(
+        actionButton(ns("trigram_subset_button"), "Filter by trigram",
+          icon("table"),
+          style = "color: #fff; background-color: #337ab7; border-color: #2e6da4; width:265px;"
+        )
+      )
+    ),
+    div(
+      style = "max-width:400px;",
+      segment(
+        imageOutput(ns("my_image"), height = "300px")
+      )
+    )
   )
 }
 
@@ -66,7 +69,7 @@ server <- function(id, vars_unify, dataset_init) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    rv <- reactiveValues(dataset=dataset_init)
+    rv <- reactiveValues(dataset = dataset_init)
 
     #
     # create word cloud jpg
@@ -79,29 +82,35 @@ server <- function(id, vars_unify, dataset_init) {
       system(paste(script_string, language_vec[initial_region]))
     }
 
-    output$my_image <- renderImage({
-      jpeg_file()
-      list(src = "app/outfiles/word_cloud.jpg",
-           contentType = "image/jpeg",
-           width = 360,
-           height = 280,
-           alt = "wc")
-    }, deleteFile = F)
+    output$my_image <- renderImage(
+      {
+        jpeg_file()
+        list(
+          src = "app/outfiles/word_cloud.jpg",
+          contentType = "image/jpeg",
+          width = 360,
+          height = 280,
+          alt = "wc"
+        )
+      },
+      deleteFile = FALSE
+    )
 
     word_freq <- setDF(fread("app/outfiles/word_freq.csv"))
 
-    output$wordcloud_select_ui<- renderUI({
+    output$wordcloud_select_ui <- renderUI({
       disabled(
-        div(style="max-width:300px;",
-            selectInput(ns("trigram_input"),
-                        "Choose trigram",
-                        choices = head(word_freq$trigram, 25)
-            )
+        div(
+          style = "max-width:300px;",
+          selectInput(ns("trigram_input"),
+            "Choose trigram",
+            choices = head(word_freq$trigram, 25)
+          )
         )
       )
     })
 
-    outputOptions(output, "wordcloud_select_ui", suspendWhenHidden=F)
+    outputOptions(output, "wordcloud_select_ui", suspendWhenHidden = F)
 
     ##########################################
     #
@@ -109,63 +118,72 @@ server <- function(id, vars_unify, dataset_init) {
     #
     ##########################################
 
-    observeEvent(c(#vars_unify$dataset_whole(),
-                   vars_unify$subset()
+    observeEvent(c( # vars_unify$dataset_whole(),
+      vars_unify$subset()
     ), {
       updateSelectInput(session,
-                        "trigram_input",
-                        "Choose trigram",
-                        choices = "Press Generate"
+        "trigram_input",
+        "Choose trigram",
+        choices = "Press Generate"
       )
     })
 
-    observeEvent(c(input$wc_button,
-                   vars_unify$dataset_whole() # submit filter action
-                   ),
-                 ignoreInit = T, {
+    observeEvent(
+      c(
+        input$wc_button,
+        vars_unify$dataset_whole() # submit filter action
+      ),
+      ignoreInit = T,
+      {
+        enable("trigram_input")
 
-      enable("trigram_input")
+        rv$dataset <- vars_unify$dataset()
 
-      rv$dataset <- vars_unify$dataset()
+        if (file.exists("app/outfiles/selection.csv")) {
+          file.remove("app/outfiles/selection.csv")
+        }
 
-      if (file.exists("app/outfiles/selection.csv")) {
-        file.remove("app/outfiles/selection.csv")
+        write.csv(tolower(rv$dataset[, "feedback"]), "app/outfiles/selection.csv", row.names = T)
+
+        if (file.exists("app/outfiles/selection.csv")) {
+          system(paste(script_string, language_vec[vars_unify$region()]))
+        }
+
+        rv$word_freq <- setDF(fread("app/outfiles/word_freq.csv"))
+
+        updateSelectInput(session,
+          "trigram_input",
+          "Choose trigram",
+          choices = head(rv$word_freq$trigram, 25)
+        )
+
+        enable("trigram_subset_button")
       }
+    ) # wc_b
 
-      write.csv(tolower(rv$dataset[, "feedback"]), "app/outfiles/selection.csv", row.names = T)
-
-      if (file.exists("app/outfiles/selection.csv")) {
-        system(paste(script_string, language_vec[vars_unify$region()]))
+    observeEvent(
+      input$trigram_subset_button # , ignoreNULL=FALSE
+      ,
+      {
+        rv$dataset_trigram <- rv$dataset[which(rv$dataset$feedback %in%
+          grep(
+            paste0("\\b",
+              unlist(strsplit(
+                input$trigram_input,
+                " "
+              )),
+              "\\b",
+              collapse = ".*"
+            ),
+            rv$dataset$feedback,
+            ignore.case = TRUE,
+            value = T
+          )), ]
       }
-
-      rv$word_freq <- setDF(fread("app/outfiles/word_freq.csv"))
-
-      updateSelectInput(session,
-                        "trigram_input",
-                        "Choose trigram",
-                        choices = head(rv$word_freq$trigram, 25)
-      )
-
-      enable("trigram_subset_button")
-
-    }) # wc_b
-
-    observeEvent(input$trigram_subset_button #, ignoreNULL=FALSE
-                 , {
-                   rv$dataset_trigram <- rv$dataset[which(rv$dataset$feedback %in%
-                                                            grep(paste0("\\b",
-                                                                        unlist(strsplit(input$trigram_input,
-                                                                                        " ")),
-                                                                        "\\b",
-                                                                        collapse=".*")
-                                                                 , rv$dataset$feedback
-                                                                 , ignore.case=TRUE
-                                                                 , value=T)), ]
-
-                 })
+    )
 
     return(list(
       dataset_trigram = reactive(rv$dataset_trigram)
     ))
-
-  })}
+  })
+}

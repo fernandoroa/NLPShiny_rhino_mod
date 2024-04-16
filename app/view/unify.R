@@ -13,7 +13,7 @@ box::use(
 )
 
 box::use(
-  app/objects/objects_NLP[...]
+  app / objects / objects_NLP[...]
 )
 
 #' @description this module watches both main dataset selectors to produce an
@@ -62,13 +62,13 @@ server <- function(id, dataset_init, vars_filter,
 
     observe({
       values[["ds_map"]] <- values[["dataset"]] <- vars_cash$dataset_subset()
-      values[["subset"]]  <- values[["subset"]] + 1
+      values[["subset"]] <- values[["subset"]] + 1
       disable("app-ns_wordcloud-trigram_subset_button", asis = T)
     }) |> bindEvent(vars_cash$subset_action(), ignoreInit = T)
 
     observe({
       values[["ds_map"]] <- values[["dataset"]] <- vars_health$dataset_subset()
-      values[["subset"]]  <- values[["subset"]] + 1
+      values[["subset"]] <- values[["subset"]] + 1
       disable("app-ns_wordcloud-trigram_subset_button", asis = T)
     }) |> bindEvent(vars_health$subset_action(), ignoreInit = T)
 

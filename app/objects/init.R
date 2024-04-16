@@ -18,6 +18,6 @@ if (file.exists("app/outfiles/selection.csv")) {
 }
 
 write.csv(tolower(dataset_init[, "feedback"]),
-          "app/outfiles/selection.csv",
-          row.names = T
+  "app/outfiles/selection.csv",
+  row.names = T
 )

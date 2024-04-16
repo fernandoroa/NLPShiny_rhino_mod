@@ -1,5 +1,3 @@
-# python3 load_model.py clf_NBC.pkl count_vect.pkl my_ser.csv outfile
-
 import sys
 import os
 import pickle

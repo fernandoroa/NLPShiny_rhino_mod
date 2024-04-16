@@ -1,10 +1,10 @@
 box::use(
-  shiny.fluent[Text,  Stack, IconButton.shinyInput, CommandBar],
+  shiny.fluent[Text, Stack, IconButton.shinyInput, CommandBar],
   shiny[tagList, div, img, NS, strong, br],
 )
 
 box::use(
-  app/view/howto_map
+  app / view / howto_map
 )
 
 #' @export
@@ -39,20 +39,20 @@ card1 <- div(
 
 #' @export
 card2 <- function(id) {
-  ns <-NS(id)
+  ns <- NS(id)
   div(
-  Stack(
-    tokens = list(childrenGap = 0),
-    strong(
-      "Map of selected feedback",
-    ),
-    br(),
-    Text(
-      "Module: Map"
-    ),
-    howto_map$ui(ns("minimap"))
+    Stack(
+      tokens = list(childrenGap = 0),
+      strong(
+        "Map of selected feedback",
+      ),
+      br(),
+      Text(
+        "Module: Map"
+      ),
+      howto_map$ui(ns("minimap"))
+    )
   )
-)
 }
 
 #' @export
@@ -151,28 +151,24 @@ card6 <- div(
 )
 
 #' @export
-card7list<-list(
+card7list <- list(
   "The shiny app is connected to a source database of community feedback.
-This feedback is provided continuously to NGOs (into the database of a third party - here as PoC only, not the real database)"
-  ,
+This feedback is provided continuously to NGOs (into the database of a third party - here as PoC only, not the real database)",
   "App PoC: The feedback should be constantly updated (module form in Database page), filtered (mod. filter),
 whenever needed tagged (tag module), based on a NLP model developed using a
-subset of tagged data (stored in .pkl files)."
-  ,
+subset of tagged data (stored in .pkl files).",
   "Finally, for the health and cash service types (models), text can be subset (mod. servicetype).
 This way NGOs can attend and prioritize solutions for communities."
 )
 
 #' @export
-card8list<-list(
+card8list <- list(
   "The python model is precomputed, saved in .pkl files,
   and loaded by python scripts, from a call in the R module
   `tag`. The pertinent python notebook developed in group is on the gitlab
   repository. In the notebook, the accepted model is SVC. See the 'About' link for the
-  repositories"
-  ,
-  "Where is python in the repository?"
-  ,
+  repositories",
+  "Where is python in the repository?",
   "- `Dockerfile` file",
   "- `requirements.txt` file",
   "- `py` folder for scripts",

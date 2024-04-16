@@ -20,7 +20,7 @@ box::use(
 
 
 box::use(
-  app/objects/objects_NLP[...],
+  app / objects / objects_NLP[...],
   app / logic / functions_NLP[...],
 )
 
@@ -43,7 +43,6 @@ server <- function(id, dataset_init, idx,
                    vars_unify) {
   moduleServer(id, function(input, output, session) {
     output$map <- renderLeaflet({
-
       types_in_dataset <- sort(unique(dataset_init$service_type))
 
       initial_region <- 2
@@ -81,44 +80,44 @@ server <- function(id, dataset_init, idx,
     #
     ####################################
 
-      observeEvent(vars_unify$ds_map(),
-        ignoreInit = T, {
-          output$map <- renderLeaflet({
-            validate(
-              need(
-                try(inherits(vars_unify$ds_map(), "data.frame")), ""
+    observeEvent(vars_unify$ds_map(),
+      ignoreInit = TRUE,
+      {
+        output$map <- renderLeaflet({
+          validate(
+            need(
+              try(inherits(vars_unify$ds_map(), "data.frame")), ""
+            )
+          )
+
+          dataset <- vars_unify$ds_map()
+
+          types_in_dataset <- sort(unique(dataset$service_type))
+
+          idx <- sapply(
+            types_in_dataset,
+            function(x) {
+              grep(x,
+                ser_list[[as.numeric(vars_unify$region())]],
+                ignore.case = TRUE
               )
-            )
+            }
+          )
 
-            dataset <- vars_unify$ds_map()
+          filtered_colors <- color_list12[idx]
 
-            types_in_dataset <- sort(unique(dataset$service_type))
+          filtered_service <- ser_list[[as.numeric(vars_unify$region())]][idx]
 
-            idx <- sapply(
-              types_in_dataset,
-              function(x) {
-                grep(x,
-                  ser_list[[as.numeric(vars_unify$region())]],
-                  ignore.case = TRUE
-                )
-              }
-            )
+          js_functions2 <- js_functions[idx]
 
-            filtered_colors <- color_list12[idx]
+          pal <- colorFactor(
+            palette = filtered_colors,
+            filtered_service
+          )
 
-            filtered_service <- ser_list[[as.numeric(vars_unify$region())]][idx]
-
-            js_functions2 <- js_functions[idx]
-
-            pal <- colorFactor(
-              palette = filtered_colors,
-              filtered_service
-            )
-
-            build_map(dataset, vars_unify$lng(), vars_unify$lat(), js_functions2, pal)
-          }) # map output
-        }
-      ) # observeEvent
-
+          build_map(dataset, vars_unify$lng(), vars_unify$lat(), js_functions2, pal)
+        })
+      }
+    )
   })
 }

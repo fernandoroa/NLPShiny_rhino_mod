@@ -21,14 +21,15 @@ hea_cat <- gl_translate(unique(health_2$main_topic))
 health_2$idea_english <- hea1_end$translatedText
 
 health_2$main_topic_english <- hea_cat$translatedText[match(
-  health_2$main_topic, hea_cat$text)]
+  health_2$main_topic, hea_cat$text
+)]
 
-saveRDS(health_2,"health_english.rds")
-write.csv(health_2, "csv/health_english.csv", row.names = F )
+saveRDS(health_2, "health_english.rds")
+write.csv(health_2, "csv/health_english.csv", row.names = F)
 
 # cash
 
-cash_2   <- fread("datasets/cash_tags_len_1categ.csv", header = T)
+cash_2 <- fread("datasets/cash_tags_len_1categ.csv", header = T)
 
 cas1_end <- gl_translate(cash_2$idea[1:length(cash_2$idea)])
 
@@ -37,8 +38,8 @@ cash_cat <- gl_translate(unique(cash_2$main_topic))
 cash_2$idea_english <- cas1_end$translatedText
 
 cash_2$main_topic_english <- cash_cat$translatedText[match(
-  cash_2$main_topic, cash_cat$text)]
+  cash_2$main_topic, cash_cat$text
+)]
 
-saveRDS(cash_2,"rds/cash_english.rds")
-write.csv(cash_2, "csv/cash_english.csv", row.names = F )
-
+saveRDS(cash_2, "rds/cash_english.rds")
+write.csv(cash_2, "csv/cash_english.csv", row.names = FALSE)

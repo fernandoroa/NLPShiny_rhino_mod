@@ -172,7 +172,7 @@ server <- function(id, vars_unify) {
         created_at_tz = created_at_tz
       )
 
-      my_entry$created_at_tz_posix <- as.POSIXct(my_entry$created_at_tz, "GMT")
+      my_entry$created_at_tz <- as.POSIXct(my_entry$created_at_tz, "GMT")
 
       saved <- tryCatch(save_data(my_entry, "colombia_big", "kujakuja"),
         error = function(e) {

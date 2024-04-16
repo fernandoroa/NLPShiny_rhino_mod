@@ -61,7 +61,6 @@ server <- function(id,
     rv <- reactiveValues(tag_active = 0)
 
     observeEvent(input$tag_button, ignoreInit = T, {
-
       if (file.exists("app/outfiles/cash_df.csv")) {
         file.remove("app/outfiles/cash_df.csv")
       }
@@ -93,9 +92,11 @@ server <- function(id,
       if (nrow(cash_df) > 0) {
         write.csv(cash_df, "app/outfiles/cash_df.csv", row.names = T)
 
-        system(paste("python3 app/py/load_model.py",
-                     cash_strings[vars_unify$region()],
-                     "app/outfiles/cash_df.csv app/outfiles/cash_out.txt"))
+        system(paste(
+          ".venv/bin/python3 app/py/load_model.py",
+          cash_strings[vars_unify$region()],
+          "app/outfiles/cash_df.csv app/outfiles/cash_out.txt"
+        ))
 
         cash_tags <- readLines("app/outfiles/cash_out.txt")
 
@@ -114,9 +115,11 @@ server <- function(id,
       if (nrow(health_df) > 0) {
         write.csv(health_df, "app/outfiles/health_df.csv", row.names = T)
 
-        system(paste("python3 app/py/load_model.py",
-                     health_strings[vars_unify$region()],
-                     "app/outfiles/health_df.csv app/outfiles/health_out.txt"))
+        system(paste(
+          ".venv/bin/python3 app/py/load_model.py",
+          health_strings[vars_unify$region()],
+          "app/outfiles/health_df.csv app/outfiles/health_out.txt"
+        ))
 
         health_tags <- readLines("app/outfiles/health_out.txt")
 
@@ -133,7 +136,7 @@ server <- function(id,
       }
 
       rv$dataset_tag <- dataset
-      rv$tag_active <- rv$tag_active+1
+      rv$tag_active <- rv$tag_active + 1
     })
 
     return(

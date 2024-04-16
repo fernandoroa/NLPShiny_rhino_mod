@@ -1,5 +1,5 @@
 box::use(
-  shiny.fluent[Text,  Stack],
+  shiny.fluent[Text, Stack],
   shiny[tagList, div, img],
   shiny.fluent[IconButton.shinyInput, Text, CommandBar],
 )
@@ -35,20 +35,24 @@ header_right <- tagList(
 )
 
 #' @export
-header_left <- tagList(logo,
-                       div(style="margin-left:auto;",
-                       IconButton.shinyInput("button",
-                                             iconProps =
-                                               list("iconName" = "CollapseMenu")
-                       )
-                       )
-                       )
+header_left <- tagList(
+  logo,
+  div(
+    style = "margin-left:auto;",
+    IconButton.shinyInput("button",
+      iconProps =
+        list("iconName" = "CollapseMenu")
+    )
+  )
+)
 
 #' @export
 footer <- Stack(
   horizontal = T,
   tokens = list(childrenGap = 150),
   Text(variant = "large", "Built by Fernando Roa & Patrick Alverga", block = TRUE),
-  Text(variant = "medium", nowrap = FALSE,
-       "Backbone based on https://github.com/Appsilon/shiny.fluent")
+  Text(
+    variant = "medium", nowrap = FALSE,
+    "Backbone based on https://github.com/Appsilon/shiny.fluent"
+  )
 )

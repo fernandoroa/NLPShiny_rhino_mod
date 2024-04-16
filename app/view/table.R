@@ -10,8 +10,8 @@ box::use(
 )
 
 box::use(
-  app/objects/objects_NLP[...],
-  app/logic/functions_NLP[...]
+  app / objects / objects_NLP[...],
+  app / logic / functions_NLP[...]
 )
 
 #' @description module to allow choosing a data.frame name and its feedback from
@@ -109,7 +109,8 @@ server <- function(id, dataset_init,
     })
 
     observeEvent(c(vars_unify$dataset()),
-      ignoreInit = T, {
+      ignoreInit = TRUE,
+      {
         dataset <- vars_unify$dataset()
 
         extant_cols <- colnames(dataset)
@@ -167,7 +168,8 @@ server <- function(id, dataset_init,
           )
         }
 
-        output$mytable <- DT::renderDataTable({
+        output$mytable <- DT::renderDataTable(
+          {
             make_table(
               dataset, filtered_cols,
               loc_u, dontwrap_cols_filt,

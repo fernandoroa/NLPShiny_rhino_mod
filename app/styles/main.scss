@@ -94,6 +94,7 @@ body {
   align-items: flex-start;
   justify-content: left;
   width: 263px;
+  position: relative;
 }
 
 .drop-container .ui.form {
@@ -151,7 +152,7 @@ element.style {
 }
 */
 
-.ui.button[id$='select_UI_id'] {
+.ui.button[id$="select_UI_id"] {
   width: 231px;
 }
 
@@ -228,7 +229,7 @@ element.style {
 }
 
 .ui.selection.dropdown,
-.ui.form input[type=number],
+.ui.form input[type="number"],
 .ms-TextField-fieldGroup {
   border: 1px solid #000;
 }
